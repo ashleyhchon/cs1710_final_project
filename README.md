@@ -1,0 +1,1 @@
+link to hackmd file: https://hackmd.io/@achon2/ByeTxIum2
