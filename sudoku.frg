@@ -69,12 +69,22 @@ pred middleSolution[s: StartingState] {
     #s.board = 40
 }
 
+pred middleHalfSolution[s: StartingState] {
+    some r: values | {r < 4 and s.board[r][Int] = values}
+    some c: values | {c < 4 and s.board[Int][c] = values}
+
+    some subgrid: values | 
+        get_grid[s, subgrid] = values
+    
+    #MiddleState.board = 9
+}
+
 pred solve {
     StartingState.board in SolvedState.board
     StartingState.board in MiddleState.board
     MiddleState.board in SolvedState.board
     solution[SolvedState]
-    middleSolution[MiddleState]
+    middleHalfSolution[MiddleState]
 }
 
 
