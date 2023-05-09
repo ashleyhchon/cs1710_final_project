@@ -60,30 +60,37 @@ pred solution[s: StartingState] {
 }
 
 pred middleSolution[s: StartingState] {
-    some r: values | s.board[r][Int] = values
-    some c: values | s.board[Int][c] = values
+    some r: values | {
+        r = 1 or r = 2 or r = 3
+        s.board[r][Int] = values
+    }
+    some c: values | {
+        c = 1 or c = 2 or c = 3
+    }
 
-    some subgrid: values | 
+    some subgrid: values | {
+        subgrid = 1
         get_grid[s, subgrid] = values
+    }
     
-    #s.board = 40
+    #s.board = 9
 }
 
 pred middleHalfSolution[s: StartingState] {
-    some r: values | {r < 4 and s.board[r][Int] = values}
-    some c: values | {c < 4 and s.board[Int][c] = values}
+    some r: values | ((r = 2 or r = 1 or r = 3) and s.board[r][Int] = values)
+    some c: values | ((c = 2 or c = 1 or c = 3) and s.board[Int][c] = values)
 
-    some subgrid: values | 
-        get_grid[s, subgrid] = values
+    // some subgrid: values | 
+    get_grid[s, 1] = values
     
-    #MiddleState.board = 9
+    // #MiddleState.board = 9
 }
 
 pred solve {
-    StartingState.board in SolvedState.board
+    // StartingState.board in SolvedState.board
     StartingState.board in MiddleState.board
-    MiddleState.board in SolvedState.board
-    solution[SolvedState]
+    // MiddleState.board in SolvedState.board
+    // solution[SolvedState]
     middleHalfSolution[MiddleState]
 }
 
@@ -93,3 +100,7 @@ run {
     solve
     #StartingState.board = 7 // 7 pre-populated cells
 } for 3 BoardState, 5 Int for optimizer
+
+// hints? pencil small marking
+// how would the process work?
+
