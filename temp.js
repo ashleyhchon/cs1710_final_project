@@ -32,6 +32,27 @@ function printBoard(boardAtom, yoffset) {
     .attr('stroke-width', 3)
     .attr('stroke', 'black')
     .attr('fill', 'transparent');
+
+    d3.select(svg)
+      .append('line')
+      .attr('x1', 130)
+      .attr('y1', 7)
+      .attr('x2', 130)
+      .attr('y2', 247)
+      .attr('stroke-width', 3)
+      .attr('stroke', 'black')
+      .attr('fill', 'transparent');
+
+    d3.select(svg)
+      .append('line')
+      .attr('x1', 10)
+      .attr('y1', 127)
+      .attr('x2', 250)
+      .attr('y2', 127)
+      .attr('stroke-width', 3)
+      .attr('stroke', 'black')
+      .attr('fill', 'transparent');
+
   
   for (x = 1; x<5; x++) {
     d3.select(svg)
