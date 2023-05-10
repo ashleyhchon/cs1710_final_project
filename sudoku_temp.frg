@@ -73,7 +73,9 @@ pred init {
     // all disj i, j: Int |
     //     Board.board[i][j] = none or (one Board.board[i][j] and (Board.board[i][j] < 4 or Board.board[i][j] >= 0))
 
-    #{r, c: values | Board.board[r][c] = none} = 54
+    #{r, c: values | Board.board[r][c] != none} = 1
+    Board.board[1][1] = 9
+
     
 }
 
