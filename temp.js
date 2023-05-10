@@ -5,8 +5,9 @@ function printValue(row, col, yoffset, value) {
   d3.select(svg)
     .append("text")
     .style("fill", "black")
-    .attr("x", row*25)
-    .attr("y", col*26 + yoffset)
+    .style("font-size", "32px")
+    .attr("x", row*60 - 28)
+    .attr("y", col*61 + yoffset - 15)
     .text(value);
 }
 
@@ -32,12 +33,12 @@ function printBoard(boardAtom, yoffset) {
     .attr('stroke', 'black')
     .attr('fill', 'transparent');
   
-  for (x = 1; x<3; x++) {
+  for (x = 1; x<5; x++) {
     d3.select(svg)
       .append('line')
-      .attr('x1', 10+x*(240/3))
+      .attr('x1', 10+x*(240/4))
       .attr('y1', yoffset+7)
-      .attr('x2', 10+x*(240/3))
+      .attr('x2', 10+x*(240/4))
       .attr('y2', 250+yoffset)
       .attr('stroke-width', 1)
       .attr('stroke', 'black')
@@ -46,9 +47,9 @@ function printBoard(boardAtom, yoffset) {
     d3.select(svg)
       .append('line')
       .attr('x1', 10)
-      .attr('y1', yoffset+5+x*(240/3))
+      .attr('y1', yoffset+5+x*(240/4))
       .attr('x2', 250)
-      .attr('y2', yoffset+5+x*(240/3))
+      .attr('y2', yoffset+5+x*(240/4))
       .attr('stroke-width', 1)
       .attr('stroke', 'black')
       .attr('fill', 'transparent');
