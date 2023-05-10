@@ -71,7 +71,7 @@ pred wellformed {
 pred init[empty: Int] {
     wellformed
 
-    #{r, c: values | Board.board[r][c] = none} = 5
+    #{r, c: values | Board.board[r][c] = none} = empty
     // no Board.board
     
 }
@@ -111,7 +111,7 @@ pred traces[empty: Int] {
     always {move or doNothing}
 }
 
-run {traces[5]} for 6 Int for optimizer
+run {traces[4] eventually win} for 6 Int for optimizer
 
 
 test expect {
