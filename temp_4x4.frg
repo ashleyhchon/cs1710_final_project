@@ -17,9 +17,9 @@ one sig Board {
 inst optimizer {
     Board = `Board0
     board in Board ->
-             (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) -> 
-             (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9) -> 
-             (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9)
+             (1 + 2 + 3 + 4) -> 
+             (1 + 2 + 3 + 4) -> 
+             (1 + 2 + 3 + 4)
 }
 
 fun subgrids: set Int -> Int -> Int {
@@ -37,7 +37,7 @@ fun get_grid[subgrid: Int]: set Int {
 }
 
 fun values: set Int {
-    (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9)
+    (1 + 2 + 3 + 4)
 }
 
 
@@ -60,7 +60,7 @@ pred wellformed {
     //     }
     // }
 
-    all i: Int | (i <- 0 or i > 9) implies {
+    all i: Int | (i <- 0 or i > 4) implies {
         no Board.board[i]
         no Board.board[Int][i]
         no Board.board.i
@@ -73,7 +73,7 @@ pred init {
     // all disj i, j: Int |
     //     Board.board[i][j] = none or (one Board.board[i][j] and (Board.board[i][j] < 4 or Board.board[i][j] >= 0))
 
-    #{r, c: values | Board.board[r][c] = none} = 54
+    #{r, c: values | Board.board[r][c] = none} = 15
     
 }
 
@@ -89,20 +89,22 @@ pred move {
         get_grid[subgrid] = values
 
     Board.board in Board.board'
-    #Board.board' = #Board.board + 10
+    #Board.board' = #Board.board + 4
 }
 
 pred win {
     // all r: values | {
     //     all c: values | Board.board[r][c] in values
     // }
-    some r: values | no Board.board[r][Int] 
-    some c: values | no Board.board[Int][c] 
+    // some r: values | no Board.board[r][Int] 
+    // some c: values | no Board.board[Int][c] 
+    Board.board in Board.board'
     all r: values | Board.board'[r][Int] = values
     all c: values | Board.board'[Int][c] = values
 
     all subgrid: values | 
         get_grid[subgrid] = values
+
 }
 
 pred doNothing {
@@ -111,7 +113,7 @@ pred doNothing {
 
 pred traces {
     init
-    // always { win or doNothing}
+    next_state win
 }
 
-run {traces} for 6 Int for optimizer
+run {traces} for 5 Int for optimizer

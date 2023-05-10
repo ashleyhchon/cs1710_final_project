@@ -10,8 +10,8 @@ function printValue(row, col, yoffset, value) {
     .text(value);
 }
 
-const rows = 9
-const cols = 9
+const rows = 4
+const cols = 4
 
 function printBoard(boardAtom, yoffset) {
   for (r = 1; r <= rows; r++) {
