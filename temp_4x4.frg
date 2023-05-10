@@ -68,28 +68,23 @@ pred wellformed {
 
 }
 
-pred init {
+pred init[empty: Int] {
     wellformed
-    // all disj i, j: Int |
-    //     Board.board[i][j] = none or (one Board.board[i][j] and (Board.board[i][j] < 4 or Board.board[i][j] >= 0))
 
-    #{r, c: values | Board.board[r][c] = none} = 15
+    #{r, c: values | Board.board[r][c] = none} = 5
+    // no Board.board
     
 }
 
 pred move {
-    // some i, j, k: values | {
-    //     Board.board in Board.board'
-    //     #Board.board' = #Board.board + 10
-    // }
-    some r: values | Board.board'[r][Int] = values
-    some c: values | Board.board'[Int][c] = values
+    // some r: values | Board.board'[r][Int] in values
+    // some c: values | Board.board'[Int][c] in values
 
-    some subgrid: values | 
-        get_grid[subgrid] = values
+    // some subgrid: values | 
+    //     get_grid[subgrid] in values
 
     Board.board in Board.board'
-    #Board.board' = #Board.board + 4
+    #Board.board' = add[#Board.board, 1]
 }
 
 pred win {
@@ -108,12 +103,20 @@ pred win {
 }
 
 pred doNothing {
-    Board.board = Board.board'
+    Board.board' = Board.board
 }
 
-pred traces {
-    init
-    next_state win
+pred traces[empty: Int] {
+    init[empty]
+    always {move or doNothing}
 }
 
-run {traces} for 5 Int for optimizer
+run {traces[5]} for 6 Int for optimizer
+
+
+test expect {
+    tracesSAT: {traces[4]} for 5 Int for optimizer is sat
+    eventuallyWin: {traces[4] and eventually win} for 5 Int for optimizer is sat
+    alreadyWon: {traces[0] and eventually win} for exactly 1 Board, 5 Int for optimizer is sat
+    // emptyStart: {traces[16] and eventually win} for exactly 17 Board, 6 Int for optimizer is sat
+}
