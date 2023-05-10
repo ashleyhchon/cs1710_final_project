@@ -8,12 +8,6 @@ one sig Board {
     var board: pfunc Int -> Int -> Int
 }
 
-// fun boardQuadrant(row: Int, col: Int): Int {
-//     (row > 1 and col > 1) => 3 else
-//     (row > 1 and col <= 1) => 2 else
-//     (row <= 1 and col > 1) => 1 else 0
-// }
-
 inst optimizer {
     Board = `Board0
     board in Board ->
@@ -60,7 +54,7 @@ pred wellformed {
     //     }
     // }
 
-    all i: Int | (i <- 0 or i > 4) implies {
+    all i: Int | (i < 1 or i > 4) implies {
         no Board.board[i]
         no Board.board[Int][i]
         no Board.board.i
@@ -71,8 +65,7 @@ pred wellformed {
 pred init[empty: Int] {
     wellformed
 
-    #{r, c: values | Board.board[r][c] = none} = 5
-    // no Board.board
+    #{r, c: values | Board.board[r][c] = none} = empty
     
 }
 
@@ -111,12 +104,12 @@ pred traces[empty: Int] {
     always {move or doNothing}
 }
 
-run {traces[5]} for 6 Int for optimizer
+// run {traces[4] and eventually win} for 5 Int for optimizer
 
 
 test expect {
     tracesSAT: {traces[4]} for 5 Int for optimizer is sat
     eventuallyWin: {traces[4] and eventually win} for 5 Int for optimizer is sat
     alreadyWon: {traces[0] and eventually win} for exactly 1 Board, 5 Int for optimizer is sat
-    // emptyStart: {traces[16] and eventually win} for exactly 17 Board, 6 Int for optimizer is sat
+    emptyStart: {traces[6] and eventually win} for 6 Int for optimizer is sat
 }
