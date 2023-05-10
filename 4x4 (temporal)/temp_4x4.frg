@@ -51,9 +51,10 @@ pred init[empty: Int] {
 }
 
 pred move {
-    //Board.board in Board.board'
-    some r, c, n: Int | Board.board' = Board.board + (r->c->n)
-    //#Board.board' = add[#Board.board, 1]
+    // Board.board in Board.board'
+    // #Board.board' = add[#Board.board, 1]
+
+    some r, c, n: values | Board.board' = Board.board + (r->c->n)
 }
 
 pred win {
@@ -79,7 +80,7 @@ pred traces[empty: Int] {
 // option coregranularity 1
 // option solver MiniSatProver
 // option core_minimization rce
-run {traces[5] eventually win} for 6 Int for optimizer
+run {traces[5] eventually win} for 5 Int for optimizer
 
 
 // test expect {
