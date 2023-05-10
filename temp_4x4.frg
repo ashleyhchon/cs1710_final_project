@@ -111,7 +111,7 @@ pred traces[empty: Int] {
     always {move or doNothing}
 }
 
-run {traces[4] eventually win} for 6 Int for optimizer
+run {traces[5] eventually win} for 5 Int for optimizer
 
 
 test expect {
