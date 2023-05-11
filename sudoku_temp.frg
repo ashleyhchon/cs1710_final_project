@@ -73,38 +73,63 @@ pred init {
     // all disj i, j: Int |
     //     Board.board[i][j] = none or (one Board.board[i][j] and (Board.board[i][j] < 4 or Board.board[i][j] >= 0))
 
-    #{r, c: values | Board.board[r][c] != none} = 1
-    Board.board[1][1] = 9
+    // #{r, c: values | Board.board[r][c] != none} = 1
+    // Board.board[1][1] = 9
 
-    
+    #{r, c: values | Board.board[r][c] = none} = 9
+
 }
 
+// pred move {
+//     // some i, j, k: values | {
+//     //     Board.board in Board.board'
+//     //     #Board.board' = #Board.board + 10
+//     // }
+//     some r: values | Board.board'[r][Int] = values
+//     some c: values | Board.board'[Int][c] = values
+
+//     some subgrid: values | 
+//         get_grid[subgrid] = values
+
+//     Board.board in Board.board'
+//     #Board.board' = #Board.board + 10
+// }
+
+// pred win {
+//     // all r: values | {
+//     //     all c: values | Board.board[r][c] in values
+//     // }
+//     some r: values | no Board.board[r][Int] 
+//     some c: values | no Board.board[Int][c] 
+//     all r: values | Board.board'[r][Int] = values
+//     all c: values | Board.board'[Int][c] = values
+
+//     all subgrid: values | 
+//         get_grid[subgrid] = values
+// }
+
+-- predicate that ensures previous board is one entry away from the next board
 pred move {
-    // some i, j, k: values | {
-    //     Board.board in Board.board'
-    //     #Board.board' = #Board.board + 10
-    // }
-    some r: values | Board.board'[r][Int] = values
-    some c: values | Board.board'[Int][c] = values
-
-    some subgrid: values | 
-        get_grid[subgrid] = values
-
     Board.board in Board.board'
-    #Board.board' = #Board.board + 10
+    #Board.board' = add[#Board.board, 1]
+    // some r, c, n: values | Board.board' = Board.board + (r->c->n)
 }
 
+pred delete {
+    Board.board' in Board.board
+    #Board.board' = subtract[#Board.board, 1]
+    // some r, c, n: values | Board.board' = Board.board + (r->c->n)
+}
+
+-- predicate that checks if the board is solved
 pred win {
-    // all r: values | {
-    //     all c: values | Board.board[r][c] in values
-    // }
-    some r: values | no Board.board[r][Int] 
-    some c: values | no Board.board[Int][c] 
+    Board.board in Board.board'
     all r: values | Board.board'[r][Int] = values
     all c: values | Board.board'[Int][c] = values
 
     all subgrid: values | 
         get_grid[subgrid] = values
+
 }
 
 pred doNothing {
@@ -113,7 +138,7 @@ pred doNothing {
 
 pred traces {
     init
-    // always { win or doNothing}
+    always { move or doNothing}
 }
 
-run {traces} for 6 Int for optimizer
+run {traces and eventually win} for 6 Int for optimizer

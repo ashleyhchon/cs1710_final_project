@@ -59,12 +59,17 @@ pred move {
     Board.board in Board.board'
     #Board.board' = add[#Board.board, 1]
     // some r, c, n: values | Board.board' = Board.board + (r->c->n)
+    one r, c: values | {
+        Board.board[r][c] != Board.board'[r][c]
+    }
 }
 
 pred delete {
     Board.board' in Board.board
     #Board.board' = subtract[#Board.board, 1]
-    // some r, c, n: values | Board.board' = Board.board + (r->c->n)
+    one r, c: values | {
+        Board.board[r][c] != Board.board'[r][c]
+    }
 }
 
 -- predicate that checks if the board is solved
@@ -91,10 +96,10 @@ pred traces[empty: Int] {
 
 -- predicates for testing
 
-pred initWrong {
+pred initWrong[empty: Int] {
     wellformed
 
-    // #{r, c: values | Board.board[r][c] = none} = empty
+    #{r, c: values | Board.board[r][c] = none} = empty
     Board.board[1][1] = 1
     Board.board[2][2] = 1
 }
@@ -106,14 +111,20 @@ pred initHardCoded {
     Board.board[1][1] = 1
 }
 pred tracesMistake {
-    initWrong
+    initWrong[2]
     always {move or doNothing}
 }
 
-pred tracesWithRemove {
-    initWrong
+pred tracesWithRemove[empty: Int] {
+    initWrong[empty]
     always {move or doNothing or delete}
 }
+
+// pred tracesLimitedMoves {
+//     initWrong[1]
+//     next_state move
+//     next_state next_state win
+// }
 
 pred outOfBounds {
     not wellformed
@@ -131,6 +142,8 @@ pred staysFilled {
         }
     }
 }
+
+
 
 
 // option logtranslation 1
@@ -156,8 +169,16 @@ test expect {
     -- tests that filled values stay the same in the next state
     sameCells: {traces[4] and staysFilled} for 5 Int for optimizer is sat
     -- tests that a board with incorrectly filled starting values can be corrected and eventually solved
-    correctsMistake: {tracesWithRemove and eventually win} for 5 Int for optimizer is sat
+    correctsMistake: {tracesWithRemove[2] and eventually win} for 5 Int for optimizer is sat
+    -- tests that a filled board with a mistake can be corrected
+    correctsFilledMistake: {tracesWithRemove[0] and eventually win} for 5 Int for optimizer is sat
+
+
+    -- we wanted to test that a board with a mistake and one move left cannot be won. however we had difficulties testing trace length and saw weird behavior when we hardcoded next states
+    // correctsMistakeOne: {tracesLimitedMoves } for 5 Int for optimizer is unsat
 
     -- we weren't able to test this but we wanted to check that we could solve a completely empty board
     // emptyStart: {traces[16] and eventually win} for exactly 17 Board, 6 Int for optimizer is sat
 }
+
+// run {tracesWithRemove[1] and eventually win} for 5 Int for optimizer
