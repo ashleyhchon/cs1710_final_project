@@ -52,9 +52,10 @@ pred init[empty: Int] {
 }
 
 pred move {
-    //Board.board in Board.board'
-    some r, c, n: Int | Board.board' = Board.board + (r->c->n)
-    //#Board.board' = add[#Board.board, 1]
+    // Board.board in Board.board'
+    // #Board.board' = add[#Board.board, 1]
+
+    some r, c, n: values | Board.board' = Board.board + (r->c->n)
 }
 
 pred win {
@@ -80,24 +81,20 @@ pred traces[empty: Int] {
 // run {traces[4] and eventually win} for 5 Int for optimizer
 
 
-test expect {
-    tracesSAT: {traces[4]} for 5 Int for optimizer is sat
-    eventuallyWin: {traces[4] and eventually win} for 5 Int for optimizer is sat
-    alreadyWon: {traces[0] and eventually win} for exactly 1 Board, 5 Int for optimizer is sat
-    emptyStart: {traces[6] and eventually win} for 6 Int for optimizer is sat
-}
-
 // option logtranslation 1
 // option coregranularity 1
 // option solver MiniSatProver
 // option core_minimization rce
+
 // run {traces[5] eventually win} for 6 Int for optimizer
 
 
-// test expect {
-//     tracesSAT: {traces[4]} for 5 Int for optimizer is sat
-//     eventuallyWin: {traces[4] and eventually win} for 5 Int for optimizer is sat
-//     alreadyWon: {traces[0] and eventually win} for exactly 1 Board, 5 Int for optimizer is sat
-//     // emptyStart: {traces[16] and eventually win} for exactly 17 Board, 6 Int for optimizer is sat
-// }
+
+test expect {
+    tracesSAT: {traces[4]} for 5 Int for optimizer is sat
+    eventuallyWin: {traces[4] and eventually win} for 5 Int for optimizer is sat
+    // eventuallyWins: {traces[5] and eventually win} for 5 Int for optimizer is sat
+    alreadyWon: {traces[0] and eventually win} for exactly 1 Board, 5 Int for optimizer is sat
+    // emptyStart: {traces[16] and eventually win} for exactly 17 Board, 6 Int for optimizer is sat
+}
 
