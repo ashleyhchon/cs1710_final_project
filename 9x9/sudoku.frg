@@ -87,10 +87,10 @@ pred middleHalfSolution[s: StartingState] {
 }
 
 pred solve {
-    // StartingState.board in SolvedState.board
+    StartingState.board in SolvedState.board
     StartingState.board in MiddleState.board
-    // MiddleState.board in SolvedState.board
-    // solution[SolvedState]
+    MiddleState.board in SolvedState.board
+    solution[SolvedState]
     middleHalfSolution[MiddleState]
 }
 

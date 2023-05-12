@@ -9,308 +9,152 @@ test expect {
     {subgrids[4][6] = (1 + 2 + 3)} is sat
 }
 
-
-test suite for wellformed {
-    example fullBoard1 is {wellformed} for {
-        StartingState = `StartingState0
-        MiddleState = `MiddleState0
-        SolvedState = `SolvedState0
-        board = `StartingState0 -> (1 -> 1 -> 1)
+pred noHigher {
+    all s: BoardState |
+    all i: Int | (i > 9) implies {
+        no s.board[i]
+        no s.board[Int][i]
+        no s.board.i
     }
-
-    // example halfEmpty is {wellformed} for {
-    //     BoardState = `BoardState0
-    //     board = `BoardState0 -> (1 -> 1 -> 10)
-    // }
-
-//     example allSameEntry2 is not {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 1 -> 1 +
-//                             0 -> 2 -> 1 +
-//                             0 -> 3 -> 1 +
-//                             1 -> 0 -> 1 +
-//                             1 -> 1 -> 1 +
-//                             1 -> 2 -> 1 +
-//                             1 -> 3 -> 1 +
-//                             2 -> 0 -> 1 + 
-//                             2 -> 1 -> 1 + 
-//                             2 -> 2 -> 1 +
-//                             2 -> 3 -> 1 +
-//                             3 -> 0 -> 1 +
-//                             3 -> 1 -> 1 +
-//                             3 -> 2 -> 1 +
-//                             3 -> 3 -> 1)
-//     }
-
-//     example oneViolation2 is not {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 1 -> 1 +
-//                             0 -> 2 -> 4 +
-//                             0 -> 3 -> 3 +
-//                             1 -> 0 -> 4 +
-//                             1 -> 1 -> 3 +
-//                             1 -> 2 -> 2 +
-//                             1 -> 3 -> 1 +
-//                             2 -> 0 -> 3 + 
-//                             2 -> 1 -> 4 + 
-//                             2 -> 2 -> 1 +
-//                             2 -> 3 -> 2 +
-//                             3 -> 0 -> 2 +
-//                             3 -> 1 -> 1 +
-//                             3 -> 2 -> 4 +
-//                             3 -> 3 -> 3)
-//     }
-
-//     example emptyBoard is {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//     }
-
-//     example valMoreThan4 is not {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 5)
-//     }
-
-//     example valLesserThan1 is not {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 0)
-//     }
-
-//     example rowIndexMoreThan3 is not {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 4 -> 2)
-//     }
-
-//     example colIndexMoreThan3 is not {some b: Board | wellformed[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (4 -> 0 -> 2)
-//     }
 }
 
-// test suite for win {
-//     example fullBoard is {some b: Board | win[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 4 +
-//                             0 -> 1 -> 3 +
-//                             0 -> 2 -> 1 +
-//                             0 -> 3 -> 2 +
-//                             1 -> 0 -> 1 +
-//                             1 -> 1 -> 2 +
-//                             1 -> 2 -> 4 +
-//                             1 -> 3 -> 3 +
-//                             2 -> 0 -> 2 + 
-//                             2 -> 1 -> 1 + 
-//                             2 -> 2 -> 3 +
-//                             2 -> 3 -> 4 +
-//                             3 -> 0 -> 3 +
-//                             3 -> 1 -> 4 +
-//                             3 -> 2 -> 2 +
-//                             3 -> 3 -> 1)
-//     }
+pred noLower {
+    all s: BoardState |
+    all i: Int | i <- 0 implies {
+        no s.board[i]
+        no s.board[Int][i]
+        no s.board.i
+    }
+}
 
-//     example fullBoard2 is {some b: Board | win[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 1 -> 2 +
-//                             0 -> 2 -> 4 +
-//                             0 -> 3 -> 3 +
-//                             1 -> 0 -> 4 +
-//                             1 -> 1 -> 3 +
-//                             1 -> 2 -> 2 +
-//                             1 -> 3 -> 1 +
-//                             2 -> 0 -> 3 + 
-//                             2 -> 1 -> 4 + 
-//                             2 -> 2 -> 1 +
-//                             2 -> 3 -> 2 +
-//                             3 -> 0 -> 2 +
-//                             3 -> 1 -> 1 +
-//                             3 -> 2 -> 4 +
-//                             3 -> 3 -> 3)
-//     }
 
-//     example allSameEntry is {some b: Board | win[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 1 -> 1 +
-//                             0 -> 2 -> 1 +
-//                             0 -> 3 -> 1 +
-//                             1 -> 0 -> 1 +
-//                             1 -> 1 -> 1 +
-//                             1 -> 2 -> 1 +
-//                             1 -> 3 -> 1 +
-//                             2 -> 0 -> 1 + 
-//                             2 -> 1 -> 1 + 
-//                             2 -> 2 -> 1 +
-//                             2 -> 3 -> 1 +
-//                             3 -> 0 -> 1 +
-//                             3 -> 1 -> 1 +
-//                             3 -> 2 -> 1 +
-//                             3 -> 3 -> 1)
-//     }
+test suite for wellformed {
+    assert noLower is necessary for wellformed
+    assert noLower is necessary for wellformed
 
-//     example oneViolation is {some b: Board | win[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 1 -> 1 +
-//                             0 -> 2 -> 4 +
-//                             0 -> 3 -> 3 +
-//                             1 -> 0 -> 4 +
-//                             1 -> 1 -> 3 +
-//                             1 -> 2 -> 2 +
-//                             1 -> 3 -> 1 +
-//                             2 -> 0 -> 3 + 
-//                             2 -> 1 -> 4 + 
-//                             2 -> 2 -> 1 +
-//                             2 -> 3 -> 2 +
-//                             3 -> 0 -> 2 +
-//                             3 -> 1 -> 1 +
-//                             3 -> 2 -> 4 +
-//                             3 -> 3 -> 3)
-//     }
+    // example fullBoard1 is {wellformed} for {
+    //     BoardState = `StartingState0 + `MiddleState0 + `SolvedState0
+    //     StartingState = `StartingState0
+    //     MiddleState = `MiddleState0
+    //     SolvedState = `SolvedState0
+    //     board = `StartingState0 -> ((1 -> 1 -> 1) +
+    //                                 (1 -> 2 -> 2) +
+    //                                 (1 -> 3 -> 3)) +
+    //             `MiddleState0 -> ((1 -> 1 -> 1) +
+    //                                 (1 -> 2 -> 2) +
+    //                                 (1 -> 3 -> 3)) +
+    //             `SolvedState0 -> ((1 -> 1 -> 1) +
+    //                                 (1 -> 2 -> 2) +
+    //                                 (1 -> 3 -> 3)) 
 
-//     example oneCellEmpty is not {some b: Board | win[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 2 -> 4 +
-//                             0 -> 3 -> 3 +
-//                             1 -> 0 -> 4 +
-//                             1 -> 1 -> 3 +
-//                             1 -> 2 -> 2 +
-//                             1 -> 3 -> 1 +
-//                             2 -> 0 -> 3 + 
-//                             2 -> 1 -> 4 + 
-//                             2 -> 2 -> 1 +
-//                             2 -> 3 -> 2 +
-//                             3 -> 0 -> 2 +
-//                             3 -> 1 -> 1 +
-//                             3 -> 2 -> 4 +
-//                             3 -> 3 -> 3)
-//     }
+        
+        
+         // + `MiddleState0 -> (1 -> 1 -> 1) + `SolvedState0 -> (1 -> 1 -> 1)
+    // }
 
-//     example halfEmpty2 is not {some b: Board | win[b]} for {
-//         Board = `Board0
-//         board = `Board0 -> (0 -> 0 -> 1 +
-//                             0 -> 2 -> 3 +
-//                             0 -> 3 -> 2 +
-//                             1 -> 2 -> 1 +
-//                             1 -> 3 -> 4 +
-//                             2 -> 0 -> 4 + 
-//                             2 -> 1 -> 1 + 
-//                             2 -> 2 -> 2 +
-//                             3 -> 0 -> 2 +
-//                             3 -> 1 -> 3)
-//     }
+}
 
-//     example emptyBoard2 is not {some b: Board | win[b]} for {
-//         Board = `Board0
+pred allEntryInValues[s: BoardState] {
+    all r: values | {
+        all c: values | s.board[r][c] in values
+    }
+}
+
+test suite for solution {
+    assert allEntryInValues is necessary for solution
+}
+
+
+// test suite for solution {
+//     example completed is {some b: BoardState | solution[b]} for {
+//         BoardState = `StartingState0 + `MiddleState0 + `SolvedState0 
+//         StartingState = `StartingState0
+//         MiddleState = `MiddleState0
+//         SolvedState = `SolvedState0
+//         board = `SolvedState0 -> (1 -> 1 -> 6 +
+//                                   1 -> 2 -> 8 +
+//                                   1 -> 3 -> 9 +
+//                                   1 -> 4 -> 7 +
+//                                   1 -> 5 -> 4 +
+//                                   1 -> 6 -> 3 + 
+//                                   1 -> 7 -> 5 + 
+//                                   1 -> 8 -> 1 +
+//                                   1 -> 9 -> 2 +
+//                                   2 -> 1 -> 2 +
+//                                   2 -> 2 -> 5 +
+//                                   2 -> 3 -> 3 +
+//                                   2 -> 4 -> 6 +
+//                                   2 -> 5 -> 9 +
+//                                   2 -> 6 -> 1 + 
+//                                   2 -> 7 -> 7 + 
+//                                   2 -> 8 -> 4 +
+//                                   2 -> 9 -> 8 +
+//                                   3 -> 1 -> 1 +
+//                                   3 -> 2 -> 4 +
+//                                   3 -> 3 -> 7 +
+//                                   3 -> 4 -> 5 +
+//                                   3 -> 5 -> 2 +
+//                                   3 -> 6 -> 8 + 
+//                                   3 -> 7 -> 6 + 
+//                                   3 -> 8 -> 3 +
+//                                   3 -> 9 -> 9 +
+//                                   4 -> 1 -> 8 +
+//                                   4 -> 2 -> 2 +
+//                                   4 -> 3 -> 6 +
+//                                   4 -> 4 -> 3 +
+//                                   4 -> 5 -> 1 +
+//                                   4 -> 6 -> 7 + 
+//                                   4 -> 7 -> 9 + 
+//                                   4 -> 8 -> 5 +
+//                                   4 -> 9 -> 4 +
+//                                   5 -> 1 -> 5 +
+//                                   5 -> 2 -> 3 +
+//                                   5 -> 3 -> 4 +
+//                                   5 -> 4 -> 2 +
+//                                   5 -> 5 -> 8 +
+//                                   5 -> 6 -> 9 + 
+//                                   5 -> 7 -> 1 + 
+//                                   5 -> 8 -> 6 +
+//                                   5 -> 9 -> 7 +
+//                                   6 -> 1 -> 9 +
+//                                   6 -> 2 -> 7 +
+//                                   6 -> 3 -> 1 +
+//                                   6 -> 4 -> 4 +
+//                                   6 -> 5 -> 5 +
+//                                   6 -> 6 -> 6 + 
+//                                   6 -> 7 -> 8 + 
+//                                   6 -> 8 -> 2 +
+//                                   6 -> 9 -> 3 +
+//                                   7 -> 1 -> 7 +
+//                                   7 -> 2 -> 1 +
+//                                   7 -> 3 -> 2 +
+//                                   7 -> 4 -> 8 +
+//                                   7 -> 5 -> 3 +
+//                                   7 -> 6 -> 5 + 
+//                                   7 -> 7 -> 4 + 
+//                                   7 -> 8 -> 9 +
+//                                   7 -> 9 -> 6 +
+//                                   8 -> 1 -> 4 +
+//                                   8 -> 2 -> 6 +
+//                                   8 -> 3 -> 5 +
+//                                   8 -> 4 -> 9 +
+//                                   8 -> 5 -> 7 +
+//                                   8 -> 6 -> 2 + 
+//                                   8 -> 7 -> 3 + 
+//                                   8 -> 8 -> 8 +
+//                                   8 -> 9 -> 1 +
+//                                   9 -> 1 -> 3 +
+//                                   9 -> 2 -> 9 +
+//                                   9 -> 3 -> 8 +
+//                                   9 -> 4 -> 1 +
+//                                   9 -> 5 -> 6 +
+//                                   9 -> 6 -> 4 + 
+//                                   9 -> 7 -> 2 + 
+//                                   9 -> 8 -> 7 +
+//                                   9 -> 9 -> 5) 
 //     }
 // }
 
-// test suite for move {
-//     // can manually input the values for row col val 
-//     example oneEmpty is {some pre, post: Board | move[pre, post, 3, 3, 1]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 0 -> 4 +
-//                             0 -> 1 -> 3 +
-//                             0 -> 2 -> 1 +
-//                             0 -> 3 -> 2 +
-//                             1 -> 0 -> 1 +
-//                             1 -> 1 -> 2 +
-//                             1 -> 2 -> 4 +
-//                             1 -> 3 -> 3 +
-//                             2 -> 0 -> 2 + 
-//                             2 -> 1 -> 1 + 
-//                             2 -> 2 -> 3 +
-//                             2 -> 3 -> 4 +
-//                             3 -> 0 -> 3 +
-//                             3 -> 1 -> 4 +
-//                             3 -> 2 -> 2) +
-//                     `Board1 -> (0 -> 0 -> 4 +
-//                             0 -> 1 -> 3 +
-//                             0 -> 2 -> 1 +
-//                             0 -> 3 -> 2 +
-//                             1 -> 0 -> 1 +
-//                             1 -> 1 -> 2 +
-//                             1 -> 2 -> 4 +
-//                             1 -> 3 -> 3 +
-//                             2 -> 0 -> 2 + 
-//                             2 -> 1 -> 1 + 
-//                             2 -> 2 -> 3 +
-//                             2 -> 3 -> 4 +
-//                             3 -> 0 -> 3 +
-//                             3 -> 1 -> 4 +
-//                             3 -> 2 -> 2 +
-//                             3 -> 3 -> 1)
-//     }
-//     example halfEmpty3 is {some pre, post: Board | move[pre, post, 2, 3, 3]} for {
-//     Board = `Board0 + `Board1
-//     board = `Board0 -> (0 -> 0 -> 1 +
-//                         0 -> 2 -> 3 +
-//                         0 -> 3 -> 2 +
-//                         1 -> 2 -> 1 +
-//                         1 -> 3 -> 4 +
-//                         2 -> 0 -> 4 + 
-//                         2 -> 1 -> 1 + 
-//                         2 -> 2 -> 2 +
-//                         3 -> 0 -> 2 +
-//                         3 -> 1 -> 3) +
-//             `Board1 -> (0 -> 0 -> 1 +
-//                         0 -> 2 -> 3 +
-//                         0 -> 3 -> 2 +
-//                         1 -> 2 -> 1 +
-//                         1 -> 3 -> 4 +
-//                         2 -> 0 -> 4 + 
-//                         2 -> 1 -> 1 + 
-//                         2 -> 2 -> 2 +
-//                         2 -> 3 -> 3 +
-//                         3 -> 0 -> 2 +
-//                         3 -> 1 -> 3)
-//     }
-    
 
     
-//     example EmptyExceptOne is {some pre, post: Board | move[pre, post, 0, 0, 1]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 1 -> 2) +
-//                 `Board1 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 1)
-//     }
 
-//     example wrongRowInput is not {some pre, post: Board | move[pre, post, 1, 0, 1]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 1 -> 2) +
-//                 `Board1 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 1)
-//     }
-
-//     example wrongColInput is not {some pre, post: Board | move[pre, post, 0, 1, 1]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 1 -> 2) +
-//                 `Board1 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 1)
-//     }
-
-//     example wrongValInput is not {some pre, post: Board | move[pre, post, 0, 0, 2]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 1 -> 2) +
-//                 `Board1 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 1)
-//     }
-
-//     example valLargerThan4 is not {some pre, post: Board | move[pre, post, 0, 0, 5]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 1 -> 2) +
-//                 `Board1 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 5)
-//     }
-
-//     example valLessThan1 is not {some pre, post: Board | move[pre, post, 0, 0, 0]} for {
-//         Board = `Board0 + `Board1
-//         board = `Board0 -> (0 -> 1 -> 2) +
-//                 `Board1 -> (0 -> 1 -> 2 +
-//                             0 -> 0 -> 0)
-//     }
-// }
