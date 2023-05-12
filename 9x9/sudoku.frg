@@ -4,13 +4,15 @@ abstract sig BoardState {
     board: pfunc Int -> Int -> Int
 }
 
-one sig StartingState extends BoardState {}
-one sig MiddleState extends BoardState {}
-one sig SolvedState extends BoardState {}
+// ideally would be one instead of lone, but we had it be 
+// purely for testing purposes. 
+lone sig StartingState extends BoardState {}
+lone sig MiddleState extends BoardState {}
+lone sig SolvedState extends BoardState {}
 
 pred wellformed {
     all s: BoardState |
-        all i: Int | (i <- 0 or i > 9) implies {
+        all i: Int | (i < 1 or i > 9) implies {
             no s.board[i]
             no s.board[Int][i]
             no s.board.i
@@ -60,16 +62,10 @@ pred solution[s: StartingState] {
 }
 
 pred middleSolution[s: StartingState] {
-    some r: values | {
-        r = 1 or r = 2 or r = 3
-        s.board[r][Int] = values
-    }
-    some c: values | {
-        c = 1 or c = 2 or c = 3
-    }
+    some r: values | s.board[r][Int] = values
+    some c: values | s.board[Int][c] = values
 
     some subgrid: values | {
-        subgrid = 1
         get_grid[s, subgrid] = values
     }
     
@@ -77,13 +73,13 @@ pred middleSolution[s: StartingState] {
 }
 
 pred middleHalfSolution[s: StartingState] {
-    some r: values | ((r = 2 or r = 1 or r = 3) and s.board[r][Int] = values)
-    some c: values | ((c = 2 or c = 1 or c = 3) and s.board[Int][c] = values)
+    some r: values | s.board[r][Int] = values
+    some c: values | s.board[Int][c] = values
 
-    // some subgrid: values | 
-    get_grid[s, 1] = values
-    
-    // #MiddleState.board = 9
+    some subgrid: values | {
+        get_grid[s, subgrid] = values
+    }
+
 }
 
 pred solve {
@@ -101,8 +97,4 @@ run {
     #StartingState.board = 7 // 7 pre-populated cells
 } for 3 BoardState, 5 Int for optimizer
 
-// hints? pencil small marking
-// how would the process work?
-
-// 
 
