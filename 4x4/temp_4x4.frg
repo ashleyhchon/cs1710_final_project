@@ -18,6 +18,7 @@ inst optimizer {
              (1 + 2 + 3 + 4)
 }
 
+-- helper function to get the subgrids of the board
 fun subgrids: set Int -> Int -> Int {
     (1 -> (1 + 2) -> (1 + 2)) +
     (2 -> (1 + 2) -> (3 + 4)) +
@@ -25,6 +26,7 @@ fun subgrids: set Int -> Int -> Int {
     (4 -> (3 + 4) -> (3 + 4))
 }
 
+-- returns values in a subgrid
 fun get_grid[subgrid: Int]: set Int {
     let indexes = subgrids[subgrid] |
     let rows = indexes.Int |
@@ -47,7 +49,7 @@ pred wellformed {
 
 }
 
--- predicate to check that the board is initizalized with the "empty" number of empty cells
+-- predicate to check that the board is initizalized with the "empty" number of empty cells. empty cannot be greater than 4 because of technical issues...
 pred init[empty: Int] {
     wellformed
 
@@ -59,12 +61,14 @@ pred init[empty: Int] {
 pred move {
     Board.board in Board.board'
     #Board.board' = add[#Board.board, 1]
+    -- a suggestion from Tim but it was unsat and took too long :(
     // some r, c, n: values | Board.board' = Board.board + (r->c->n)
     one r, c: values | {
         Board.board[r][c] != Board.board'[r][c]
     }
 }
 
+-- predicate that allows the next state to subtract a cell, but checks that no other cells have changed values
 pred delete {
     Board.board' in Board.board
     #Board.board' = subtract[#Board.board, 1]
@@ -96,8 +100,9 @@ pred traces[empty: Int] {
 }
 
 
--- predicates for testing
+-------------------------- predicates for testing
 
+-- separate init for an incorrect starting board (used for tests)
 pred initWrong[empty: Int] {
     wellformed
 
@@ -106,37 +111,59 @@ pred initWrong[empty: Int] {
     Board.board[2][2] = 1
 }
 
+pred initWrongMult[empty: Int] {
+    wellformed
+
+     #{r, c: values | Board.board[r][c] = none} = empty
+    Board.board[1][1] = 1
+    Board.board[1][2] = 1
+    Board.board[2][2] = 1
+}
+
+-- hardcoded start board with no mistakes (cannot ensure that only value is filled becuase we are unable to check all empty cells)
 pred initHardCoded {
     wellformed
 
     // #{r, c: values | Board.board[r][c] = none} = empty
     Board.board[1][1] = 1
 }
+
+-- running a trace with an incorrect starting board and 2 empty spaces
 pred tracesMistake {
     initWrong[2]
     always {move or doNothing}
 }
 
+-- a trace with an incorrect starting board but with the option to fix the mistake
 pred tracesWithRemove[empty: Int] {
     initWrong[empty]
     always {move or doNothing or delete}
 }
 
+pred tracesWithRemoveMult[empty: Int] {
+    initWrongMult[empty]
+    always {move or doNothing or delete}
+}
+
+-- tried hardcoding states to check if there is an incorrect start board with one space and only one move left, you cannot win
 // pred tracesLimitedMoves {
 //     initWrong[1]
 //     next_state move
 //     next_state next_state win
 // }
 
+-- making an invalid board
 pred outOfBounds {
     not wellformed
 }
+
+-- running a trace with an invalid board
 pred tracesOutOfBounds {
     outOfBounds
     always {move or doNothing}
 }
 
-// don't know how to check all future states
+// checking that any filled cell should stay filled with the same value
 pred staysFilled { 
     always {
         all r, c: values | {
@@ -145,13 +172,14 @@ pred staysFilled {
     }
 }
 
+-- played around with this during Tim's office hours
 // option logtranslation 1
 // option coregranularity 1
 // option solver MiniSatProver
 // option core_minimization rce
 
+-- cannot run this with more than 4 empty spaces despite experimenting with diffirent Int values.
 // run {traces[5] eventually win} for 5 Int for optimizer
-
 
 test expect {
     -- vacuity test
@@ -172,7 +200,12 @@ test expect {
     correctsMistake: {tracesWithRemove[2] and eventually win} for 5 Int for optimizer is sat
     -- tests that a filled board with a mistake can be corrected
     correctsFilledMistake: {tracesWithRemove[0] and eventually win} for 5 Int for optimizer is sat
+    -- uses our staysFilled predicate to ensure that some cell has been deleted
+    somethingGetsRemoved: {tracesWithRemove[2] and eventually win and staysFilled} for 5 Int for optimizer is unsat
 
+
+    -- tests that even with more than one mistake, the board can be corrected. We observed that this actually creates boards with many mistakes and it cannot eventually win.
+    // correctsMistakeMult: {tracesWithRemoveMult[2] and eventually win} for 5 Int for optimizer is sat
 
     -- we wanted to test that a board with a mistake and one move left cannot be won. however we had difficulties testing trace length and saw weird behavior when we hardcoded next states
     // correctsMistakeOne: {tracesLimitedMoves } for 5 Int for optimizer is unsat
@@ -182,3 +215,4 @@ test expect {
 }
 
 // run {tracesWithRemove[1] and eventually win} for 5 Int for optimizer
+run {tracesWithRemoveMult[1] and eventually win} for 5 Int for optimizer

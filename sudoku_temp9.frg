@@ -100,8 +100,4 @@ test expect {
     tracesSAT: {traces} for exactly 3 BoardState, 5 Int for optimizer
       is sat
 }
-// hints? pencil small marking
-// how would the process work?
-
-
 run { traces } for exactly 3 BoardState, 5 Int for optimizer

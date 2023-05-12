@@ -1,3 +1,4 @@
+// visualizer inspired by Tim's sudoku examples!
 d3 = require('d3')
 d3.selectAll("svg > *").remove();
 
