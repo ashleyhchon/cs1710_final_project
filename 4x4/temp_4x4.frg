@@ -181,6 +181,9 @@ pred staysFilled {
 -- cannot run this with more than 4 empty spaces despite experimenting with diffirent Int values.
 // run {traces[5] eventually win} for 5 Int for optimizer
 
+-- working ex
+run {traces[4] eventually win} for 5 Int for optimizer
+
 test expect {
     -- vacuity test
     tracesSAT: {traces[4]} for 5 Int for optimizer is sat
@@ -215,4 +218,4 @@ test expect {
 }
 
 // run {tracesWithRemove[1] and eventually win} for 5 Int for optimizer
-run {tracesWithRemoveMult[1] and eventually win} for 5 Int for optimizer
+// run {tracesWithRemoveMult[1] and eventually win} for 5 Int for optimizer
